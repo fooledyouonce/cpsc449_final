@@ -3,7 +3,7 @@ import mysql.connector
 
 app = Flask(__name__)
 
-# MySQL connection
+# MySQL configuration
 db = mysql.connector.connect(
     host="localhost",
     user="root",
@@ -19,16 +19,15 @@ def create_task():
     due_date = data.get('due_date')
 
     if title and description and due_date:
-
         cursor = db.cursor()
         insert_query = "INSERT INTO Tasks (title, description, due_date) VALUES (%s, %s, %s)"
         cursor.execute(insert_query, (title, description, due_date))
         db.commit()
         cursor.close()
 
-        return jsonify({"message": "Task created successfully"}), 201
+        return jsonify({"message": "To do item added!"}), 201
     else:
-        return jsonify({'error': 'Missing required fields'}), 400
+        return jsonify({'error': 'Missing required fields!'}), 400
 
 @app.route('/todolist', methods=['GET'])
 def get_tasks():
@@ -48,13 +47,16 @@ def update_task(task_id):
     due_date = data.get('due_date')
     completed = data.get('completed')
 
-    cursor = db.cursor()
-    update_query = "UPDATE Tasks SET title = %s, description = %s, due_date = %s, completed = %s WHERE task_id = %s"
-    cursor.execute(update_query, (title, description, due_date, completed, task_id))
-    db.commit()
-    cursor.close()
+    if title or description or due_date or completed:
+        cursor = db.cursor()
+        update_query = "UPDATE Tasks SET title = %s, description = %s, due_date = %s, completed = %s WHERE task_id = %s"
+        cursor.execute(update_query, (title, description, due_date, completed, task_id))
+        db.commit()
+        cursor.close()
 
-    return jsonify({"message": "Task updated successfully"})
+        return jsonify({"message": "To do item updated!"})
+    else:
+        return jsonify({"error": "No update performed, fill in required fields."})
 
 @app.route('/todolist/<int:task_id>', methods=['DELETE'])
 def delete_task(task_id):
