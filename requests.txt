@@ -3,3 +3,9 @@
     "description": "Write and submit the project proposal by the deadline.",
     "due_date": "2024-03-20"
 }
+
+{
+    "title": "ASL Midterm",
+    "description": "Learn ASL or else my girlfriend kills me",
+    "due_date": "2024-03-14"
+}
