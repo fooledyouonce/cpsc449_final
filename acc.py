@@ -76,16 +76,18 @@ def register_user_async(username, password):
     if not username and password:
         return {"error": "Username and password are required!"}, 400
 
+    #with app.app_context():
     try:
         # hash the password
         hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+        with app.app_context():
 
         # insert user information into the database
-        cursor = mysql.connection.cursor()
-        insert_query = "INSERT INTO Users (username, password_hash) VALUES (%s, %s)"
-        cursor.execute(insert_query, (username, hashed_password))
-        mysql.connection.commit()
-        cursor.close()
+            cursor = mysql.connection.cursor()
+            insert_query = "INSERT INTO Users (username, password_hash) VALUES (%s, %s)"
+            cursor.execute(insert_query, (username, hashed_password))
+            mysql.connection.commit()
+            cursor.close()
 
         return {"message": "User registered successfully!"}, 201
     except Exception as err:
@@ -113,13 +115,16 @@ def login_user_async(username, password):
     if not username and password:
         return {"error": "Username and password are required!"}, 400
 
+
     try:
-        # fetch user information from the database
-        cursor = mysql.connection.cursor()
-        query = "SELECT * FROM Users WHERE username = %s"
-        cursor.execute(query, (username,))
-        user = cursor.fetchone()
-        cursor.close()
+        with app.app_context():
+            
+            # fetch user information from the database
+            cursor = mysql.connection.cursor()
+            query = "SELECT * FROM Users WHERE username = %s"
+            cursor.execute(query, (username,))
+            user = cursor.fetchone()
+            cursor.close()
 
         if not user:
             return {"error": "Invalid username or password!"}, 401
@@ -171,6 +176,8 @@ def logout_user_async(token):
         # if 'jti' claim is present, add it to the revoked tokens set
         if "jti" in payload:
             revoked_tokens.add(payload["jti"])
+            
+        redis_client.delete(token)
 
         return {"message": "User logged out successfully!"}, 200
     except jwt.ExpiredSignatureError:
