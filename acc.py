@@ -7,7 +7,7 @@ from celery import Celery
 from datetime import datetime, timedelta
 from flask import Flask, request, jsonify, current_app
 from flask_mysqldb import MySQL
-#import mysql.connector
+
 
 
 
@@ -16,7 +16,6 @@ app = Flask(__name__)
 
 # generate a random secret key with 32 bytes (256 bits)
 app.secret_key = secrets.token_hex(32)
-# print(secret_key)
 
 # initialize an empty set to store revoked tokens (blacklist)
 revoked_tokens = set()
@@ -25,16 +24,14 @@ revoked_tokens = set()
 redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 app.config['REDIS_CLIENT'] = redis_client
 
-
 # Celery configuration
-#celery = Celery('acc', broker='redis://localhost:6379/0', backend='redis://localhost:6379/0')
-
 app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
-app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
+app.config['result_backend'] = 'redis://localhost:6379/0'
 
 # Initialize Celery
-celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
-celery.conf.update(app.config)
+celery1 = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
+celery1.conf.task_routes = {'acc.*':{'queue':'a'}}
+celery1.conf.update(app.config)
 
 
 
@@ -47,10 +44,6 @@ app.config['MYSQL_DB'] = 'auth'
 
 # Initialize MySQL
 mysql = MySQL(app)
-
-
-
-
 
 # Create Users table if not exists
 with app.app_context():
@@ -70,7 +63,7 @@ with app.app_context():
 
 
 # Celery task for user registration
-@celery.task
+@celery1.task
 def register_user_async(username, password):
     
     if not username and password:
@@ -110,11 +103,10 @@ def register_user():
 
 
 # Celery task for user login
-@celery.task
+@celery1.task
 def login_user_async(username, password):
     if not username and password:
         return {"error": "Username and password are required!"}, 400
-
 
     try:
         with app.app_context():
@@ -167,7 +159,7 @@ def login_user():
 
 
 # Celery task for user logout
-@celery.task
+@celery1.task
 def logout_user_async(token):
     try:
         # Cannot log out without login first
@@ -201,7 +193,7 @@ def logout_user():
         return {"error": "Missing Authorization header"}, 401
 
     token = auth_header.split(" ")[1]
-    #print(token)
+    
     # send the task to Celery to execute asynchronously
     task = logout_user_async.delay(token)
     result, status_code = task.get()  # retrieve the result and status code of the task

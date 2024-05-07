@@ -3,7 +3,6 @@ from celery import Celery
 from datetime import datetime, timedelta
 from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
-#import mysql.connector
 
 
 
@@ -13,20 +12,14 @@ app = Flask(__name__)
 redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 app.config['REDIS_CLIENT'] = redis_client
 
-
 # Celery configuration
-#celery = Celery('tasks', broker='redis://localhost:6379/0', backend='redis://localhost:6379/0')
-
-
-
-
 app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
-app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
+app.config['result_backend'] = 'redis://localhost:6379/0'
 
 # Initialize Celery
-celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
-celery.conf.update(app.config)
-#celery.conf.r = {'todo.*': {'queue': todo_queue},}
+celery2 = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
+celery2.conf.task_routes = {'todo.*':{'queue':'b'}}
+celery2.conf.update(app.config)
 
 
 
@@ -68,17 +61,11 @@ def access_control():
 
     # Query Redis to check if the token exists and is associated with a logged-in user
     if not redis_client.exists(token):
-        return jsonify({'error': 'Invalid or expired token'}), 401
-
-    # Token exists and is valid, proceed to handle the request
-    # Add logic here to retrieve todos or perform other actions
-
-    #return jsonify({'message': 'Authorized to access todos'}), 200   
-    
+        return jsonify({'error': 'Invalid or expired token'}), 401    
     
 
 # Celery task for creating a task
-@celery.task
+@celery2.task
 def create_task_async(title, description, due_date):
     if not title or not description or not due_date:
         return {"error": "Missing required fields!"}, 400
@@ -115,7 +102,7 @@ def create_task():
 
 
 # Celery task for retrieving tasks
-@celery.task
+@celery2.task
 def get_tasks_async():
     try:
         with app.app_context():
@@ -145,7 +132,7 @@ def get_tasks():
 
 
 # Celery task for updating a task
-@celery.task
+@celery2.task
 def update_task_async(task_id, title, description, due_date, completed):
     try:
         with app.app_context():
@@ -200,7 +187,7 @@ def update_task(task_id):
 
 
 # Celery task for deleting a task
-@celery.task
+@celery2.task
 def delete_task_async(task_id):
     try:
         with app.app_context():
