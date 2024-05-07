@@ -95,7 +95,7 @@ def register_user_async(username, password):
 
 
 # endpoint for user registration
-@app.route("/register", methods=["POST"])
+@app.route("/account/register", methods=["POST"])
 def register_user():
     data = request.json
     username = data.get("username")
@@ -152,7 +152,7 @@ def login_user_async(username, password):
 
 
 # endpoint for user login
-@app.route("/login", methods=["POST"])
+@app.route("/account/login", methods=["POST"])
 def login_user():
     data = request.json
     username = data.get("username")
@@ -170,13 +170,18 @@ def login_user():
 @celery.task
 def logout_user_async(token):
     try:
+        # Cannot log out without login first
+        if not redis_client.exists(token):
+            return {'error': "Token not found. Must login first."}, 404
+        
         # decode the JWT token to extract the payload
         payload = jwt.decode(token, app.secret_key, algorithms=["HS256"])
 
         # if 'jti' claim is present, add it to the revoked tokens set
         if "jti" in payload:
             revoked_tokens.add(payload["jti"])
-            
+        
+        #print(token)
         redis_client.delete(token)
 
         return {"message": "User logged out successfully!"}, 200
@@ -189,14 +194,14 @@ def logout_user_async(token):
 
 
 # endpoint for user logout
-@app.route("/logout", methods=["POST"])
+@app.route("/account/logout", methods=["POST"])
 def logout_user():
     auth_header = request.headers.get("Authorization")
     if not auth_header:
         return {"error": "Missing Authorization header"}, 401
 
     token = auth_header.split(" ")[1]
-
+    #print(token)
     # send the task to Celery to execute asynchronously
     task = logout_user_async.delay(token)
     result, status_code = task.get()  # retrieve the result and status code of the task
