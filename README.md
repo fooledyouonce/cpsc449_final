@@ -2,33 +2,35 @@
 
 
 
-Please Install Required Packages:
+**Please Install Required Packages:**
 
-Celery (asynchronous processing)
-Redis (message broker)
-Nginx (API Gateway)
-MySQL (database)
-Flask (web application)
-Eventlet (using Celery with Windows)
-Bycrypt, JWT, Secrets (Security/Authorization)
-Postman (testing)
-
-
-
-Run the following services:
-
-Redis server
-Nginx
-MySQL database server
-Account server (acc.py)
-Celery worker 1 ('celery -A acc.celery1 worker -Q a -l info -P eventlet')
-Application server (todo.py)
-Celery worker 2 ('celery -A todo.celery2 worker -Q b -l info -P eventlet')
+Celery (asynchronous processing)<br>
+Redis (message broker)<br>
+Nginx (API Gateway)<br>
+MySQL (database)<br>
+Flask (web application)<br>
+Eventlet (using Celery with Windows)<br>
+Bycrypt, JWT, Secrets (Security/Authorization)<br>
+Postman (testing)<br>
 
 
 
-Usage:
-Login is required in order to use application APIs.
-An authorization token will be returned when logged in.
-In Postman, in the Authorization tab, choose Bearer Token and fill in the Key form with the token provided whenever a request is made to the Application APIs.
+**Run the following services:**
+
+Redis server<br>
+Nginx server in same folder as application<br>
+MySQL database server<br>
+Account server (acc.py)<br>
+Celery worker 1 ('celery -A acc.celery1 worker -Q a -l info -P eventlet')<br>
+Application server (todo.py)<br>
+Celery worker 2 ('celery -A todo.celery2 worker -Q b -l info -P eventlet')<br>
+
+
+
+**Usage:**
+
+Register a user.<br>
+Login using the same credential in order to use application APIs.<br>
+An authorization token will be returned when logged in.<br>
+In Postman, in the Authorization tab, choose Bearer Token and fill in the Key form with the token provided whenever making a request to the Application APIs.<br>
 
