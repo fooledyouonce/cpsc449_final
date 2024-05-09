@@ -19,7 +19,8 @@ Postman (testing)<br>
 
 Redis server<br>
 Nginx server in same folder as application<br>
-MySQL database server<br>
+MySQL database servers, 1 for account, 1 for application<br>
+Set the correct database configuration in both acc.py and todo.py files<br>
 Account server (acc.py)<br>
 Celery worker 1 ('celery -A acc.celery1 worker -Q a -l info -P eventlet')<br>
 Application server (todo.py)<br>
@@ -34,4 +35,9 @@ Register a user.<br>
 Login using the same credential in order to use application APIs.<br>
 An authorization token will be returned when logged in.<br>
 In Postman, in the Authorization tab, choose Bearer Token and fill in the Key form with the token provided whenever making a request to the Application APIs.<br>
+
+
+
+*Note*
+All testings and commands were performed in Windows 10<br>
 
