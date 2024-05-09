@@ -29,6 +29,7 @@ Celery worker 2 ('celery -A todo.celery2 worker -Q b -l info -P eventlet')<br>
 
 **Usage:**
 
+Use 127.0.0.1:80 for all request.<br>
 Register a user.<br>
 Login using the same credential in order to use application APIs.<br>
 An authorization token will be returned when logged in.<br>
