@@ -63,5 +63,6 @@ Use `127.0.0.1:80` for all requests.
 
 ##
 
-##### *Note: All testing and commands were performed on the Windows 10 OS*
-##### *Note: Omit '-P eventlet' when running on Mac OS*
+##### *Note:*
+- *All testing and commands were performed on the Windows 10 OS*
+- *Omit '-P eventlet' when running on Mac OS*
