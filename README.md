@@ -6,7 +6,7 @@ Alexis Vu
 
 Mike Thai
 
-- [ADD CONTRIBUTIONS]
+- Transform the application into Microservices Architecture, namely: Creating monorepo, API gateway using Nginx, message broker using Redis for granting access with authorization key, modifying Celery configuration and database separation.
 
 Emily Crowl:
 
@@ -37,6 +37,7 @@ Please install the following packages:
 - Redis server
   
 - Nginx server in same folder as application
+    - Repalce the files in the conf folder with the files attached
   
 - MySQL database servers
     - Two servers: one for account, one for application
