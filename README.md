@@ -8,7 +8,7 @@ Mike Thai
 
 - Transform the application into a Microservices Architecture, namely: Creating monorepo, API gateway using Nginx, message broker using Redis for granting access with authorization key, modifying Celery configuration, separated account services and application services with their own databases.
 
-Emily Crowl:
+Emily Crowl
 
 - Created RESTful API endpoints for CRUD and user registration and login/logout. Created database and linked it to application. Helped support choosing scaling strategies and testing. 
 
