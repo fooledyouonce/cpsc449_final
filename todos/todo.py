@@ -9,6 +9,7 @@ from flask_mysqldb import MySQL
 
 # initialize Flask app
 app = Flask(__name__)
+
 redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 app.config['REDIS_CLIENT'] = redis_client
 
@@ -55,7 +56,9 @@ with app.app_context():
 @app.before_request
 def access_control():
     # Check if a valid session token or JWT is provided in the request headers
-    token = request.headers.get('Authorization')
+    auth_header = request.headers.get('Authorization')
+    token = auth_header.split(" ")[1]
+    
     if not token:
         return jsonify({'error': 'Authorization token missing'}), 401
 
