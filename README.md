@@ -2,7 +2,7 @@
 
 Alexis Vu
 
-- [ADD CONTRIBUTIONS]
+- Incorporated Celery along with Redis for enabling asynchronous task execution. Defined Celery tasks for essential functionalities including user registration, login, task management (creation, retrieval, updating, and deletion). 
 
 Mike Thai
 
