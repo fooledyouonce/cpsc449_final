@@ -62,5 +62,5 @@ Use `127.0.0.1:80` for all requests.
 
 ##
 
-##### Note: *All testing and commands were performed on the Windows 10 OS*
+##### *Note: All testing and commands were performed on the Windows 10 OS*
 
